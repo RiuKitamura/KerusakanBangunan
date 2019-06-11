@@ -36,13 +36,12 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/list1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="90dp"
-        android:layout_marginBottom="80dp">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginBottom="80dp"></ListView>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
