@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,8 +44,10 @@ public class FormActivity extends AppCompatActivity {
     Button next;
 
     private String cameraFilePath;
-    final int CAMERA_REQUEST_CODE1 = 999;
-    final int CAMERA_REQUEST_CODE2 = 99;
+    final int CAMERA_REQUEST_CODE1 = 1;
+    final int CAMERA_REQUEST_CODE2 = 0;
+
+    public static SQLiteHelper mSQLiteHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,119 +69,114 @@ public class FormActivity extends AppCompatActivity {
         no_hp = findViewById(R.id.nomor_person);
         next = findViewById(R.id.next_btn);
 
+        mSQLiteHelper = new SQLiteHelper(this, "kerusakan_bangunan.sqlite", null, 1);
+        mSQLiteHelper.queryData("CREATE TABLE IF NOT EXISTS data_bangunan(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "nama_bangunan VARCHAR, jumlah_lantai VARCHAR, tahun VARCHAR, alamt_bangunan VARCHAR, latitude VARCHAR, " +
+                "longitude VARCHAR, poto BLOB, nama VARCHAR, alamat VARCHAR, nomor_hp VARCHAR)");
+
         poto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImage();
+                System.out.println("masuk");
+                SelectImage();
             }
         });
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(nama_bg.getText().length()!=0){
+                    try{
+                        mSQLiteHelper.insertData(
+                                nama_bg.getText().toString().trim(),
+                                lantai.getText().toString().trim(),
+                                tahun.getText().toString().trim(),
+                                alamat_bg.getText().toString().trim(),
+                                lati.getText().toString().trim(),
+                                longi.getText().toString().trim(),
+                                imageViewToByte(poto),
+                                nama.getText().toString().trim(),
+                                alamat.getText().toString().trim(),
+                                no_hp.getText().toString().trim()
+                        );
+                        Toast.makeText(FormActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(FormActivity.this,MainActivity.class);
+                        startActivity(i);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    Toast.makeText(FormActivity.this, "Harus diisi semua", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds options to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+    private void SelectImage(){
 
-    private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] items={"Camera","Gallery", "Cancel"};
+
         AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setTitle("Add Image");
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo"))
-                {
-                    captureFromCamera();
-                }
-                else if (options[item].equals("Choose from Gallery"))
-                {
-                    pickFromGallery();
-                }
-                else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (items[i].equals("Camera")) {
+
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, CAMERA_REQUEST_CODE1);
+
+                } else if (items[i].equals("Gallery")) {
+
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    //startActivityForResult(intent.createChooser(intent, "Select File"), SELECT_FILE);
+                    startActivityForResult(intent, CAMERA_REQUEST_CODE2);
+
+                } else if (items[i].equals("Cancel")) {
+                    dialogInterface.dismiss();
                 }
             }
         });
         builder.show();
+
     }
 
-    private void pickFromGallery(){
-        //Create an Intent with action as ACTION_PICK
-        Intent intent=new Intent(Intent.ACTION_PICK);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        intent.setType("image/*");
-        //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-        // Launching the Intent
-        startActivityForResult(intent,CAMERA_REQUEST_CODE2);
-    }
+    @Override
+    public  void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode,data);
 
-    private void captureFromCamera() {
-        try {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
-            startActivityForResult(intent, CAMERA_REQUEST_CODE1);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if(resultCode== Activity.RESULT_OK){
+
+            if(requestCode==CAMERA_REQUEST_CODE1){
+
+                Bundle bundle = data.getExtras();
+                final Bitmap bmp = (Bitmap) bundle.get("data");
+                poto.setImageBitmap(bmp);
+
+            }else if(requestCode==CAMERA_REQUEST_CODE2){
+
+                Uri selectedImageUri = data.getData();
+                poto.setImageURI(selectedImageUri);
+            }
+
         }
     }
 
-    @SuppressLint("LongLogTag")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-                if (resultCode == Activity.RESULT_OK)
-                    switch (requestCode){
-                        case CAMERA_REQUEST_CODE1:
-                            poto.setImageURI(Uri.parse(cameraFilePath));
-                            break;
-                        case CAMERA_REQUEST_CODE2:
-                            //data.getData return the content URI for the selected Image
-                            Uri selectedImage = data.getData();
-                            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                            // Get the cursor
-                            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                            // Move to first row
-                            cursor.moveToFirst();
-                            //Get the column index of MediaStore.Images.Media.DATA
-                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            //Gets the String value in the column
-                            String imgDecodableString = cursor.getString(columnIndex);
-                            cursor.close();
-                            // Set the Image in ImageView after decoding the String
-                            poto.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString));
-                            break;
-
-                    }
+    private static byte[] imageViewToByte(ImageView image) {
+        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        //This is the directory in which the file will be created. This is the default location of Camera photos
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for using again
-        cameraFilePath = "file://" + image.getAbsolutePath();
-        return image;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
