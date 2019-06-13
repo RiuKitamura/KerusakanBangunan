@@ -47,8 +47,6 @@ public class FormActivity extends AppCompatActivity {
     final int CAMERA_REQUEST_CODE1 = 1;
     final int CAMERA_REQUEST_CODE2 = 0;
 
-    public static SQLiteHelper mSQLiteHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +67,6 @@ public class FormActivity extends AppCompatActivity {
         no_hp = findViewById(R.id.nomor_person);
         next = findViewById(R.id.next_btn);
 
-        mSQLiteHelper = new SQLiteHelper(this, "kerusakan_bangunan.sqlite", null, 1);
-        mSQLiteHelper.queryData("CREATE TABLE IF NOT EXISTS data_bangunan(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "nama_bangunan VARCHAR, jumlah_lantai VARCHAR, tahun VARCHAR, alamt_bangunan VARCHAR, latitude VARCHAR, " +
-                "longitude VARCHAR, poto BLOB, nama VARCHAR, alamat VARCHAR, nomor_hp VARCHAR)");
 
         poto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +81,7 @@ public class FormActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(nama_bg.getText().length()!=0){
                     try{
-                        mSQLiteHelper.insertData(
+                        MainActivity.mSQLiteHelper.insertData(
                                 nama_bg.getText().toString().trim(),
                                 lantai.getText().toString().trim(),
                                 tahun.getText().toString().trim(),
