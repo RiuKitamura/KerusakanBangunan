@@ -21,6 +21,7 @@ public class HistoryListAdapter extends BaseAdapter {
     private int layout;
     private ArrayList<Model> historyList;
 
+
     public HistoryListAdapter(Context context, int layout, ArrayList<Model> historyList) {
         this.context = context;
         this.layout = layout;
@@ -75,4 +76,13 @@ public class HistoryListAdapter extends BaseAdapter {
 
         return row;
     }
+
+    customButtonListener customListner;
+
+    public interface customButtonListener {
+        public void onButtonClickListner(int position,String value);
+    }
+
+
+
 }

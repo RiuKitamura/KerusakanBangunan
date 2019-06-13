@@ -47,6 +47,8 @@ public class FormActivity extends AppCompatActivity {
     final int CAMERA_REQUEST_CODE1 = 1;
     final int CAMERA_REQUEST_CODE2 = 0;
 
+    boolean isi_gambar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +69,7 @@ public class FormActivity extends AppCompatActivity {
         no_hp = findViewById(R.id.nomor_person);
         next = findViewById(R.id.next_btn);
 
-
+        isi_gambar = false;
         poto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +81,10 @@ public class FormActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(nama_bg.getText().length()!=0){
+                if(nama_bg.getText().length()!=0 && lantai.getText().length()!=0 && tahun.getText().length()!=0
+                        && alamat_bg.getText().length()!=0 && lati.getText().length()!=0 && longi.getText().length()!=0
+                        && isi_gambar!=false && nama.getText().length()!=0 && alamat.getText().length()!=0
+                        && no_hp.getText().length()!=0 ){
                     try{
                         MainActivity.mSQLiteHelper.insertData(
                                 nama_bg.getText().toString().trim(),
@@ -151,11 +156,13 @@ public class FormActivity extends AppCompatActivity {
                 Bundle bundle = data.getExtras();
                 final Bitmap bmp = (Bitmap) bundle.get("data");
                 poto.setImageBitmap(bmp);
+                isi_gambar=true;
 
             }else if(requestCode==CAMERA_REQUEST_CODE2){
 
                 Uri selectedImageUri = data.getData();
                 poto.setImageURI(selectedImageUri);
+                isi_gambar=true;
             }
 
         }
