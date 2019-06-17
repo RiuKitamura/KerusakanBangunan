@@ -9,8 +9,8 @@
     <!-- <uses-permission android:name="android.permission.camera2"></uses-permission> -->
     <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-    <!--android:hardwareAccelerated="false"-->
-    <!--android:largeHeap="true"-->
+    <!-- android:hardwareAccelerated="false" -->
+    <!-- android:largeHeap="true" -->
 
     <uses-permission android:name="android.permission.camera2" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -46,12 +46,18 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
             android:name=".UpdateActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".DiagnosisActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".KondisiKolom"
+            android:parentActivityName=".DiagnosisActivity" ></activity>
     </application>
 
 </manifest>

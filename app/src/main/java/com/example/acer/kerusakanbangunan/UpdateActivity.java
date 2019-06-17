@@ -61,10 +61,12 @@ public class UpdateActivity extends AppCompatActivity {
                 SelectImage();
             }
         });
-
+        System.out.println("masuk");
+        System.out.println("kode "+kode);
         Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_bangunan WHERE id="+kode);
         mList.clear();
         while (cursor.moveToNext()){
+            System.out.println("masuk dddddd");
             int id = cursor.getInt(0);
             String nama_b = cursor.getString(1);
             String lantai = cursor.getString(2);
@@ -76,6 +78,16 @@ public class UpdateActivity extends AppCompatActivity {
             String nama = cursor.getString(8);
             String alamat = cursor.getString(9);
             String nomor = cursor.getString(10);
+
+            System.out.println("nama b "+nama_b);
+            System.out.println("lantai:" +lantai);
+            System.out.println("tahun "+thn);
+            System.out.println("alamat b "+alamat);
+            System.out.println("lati "+lati);
+            System.out.println("longi "+longi);
+            System.out.println("nama "+nama);
+            System.out.println("alamat "+alamat);
+            System.out.println("nomor "+nomor);
 
             edtNamaB.setText(nama_b);
             edtLantai.setText(lantai);
@@ -183,29 +195,29 @@ public class UpdateActivity extends AppCompatActivity {
     private static byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
 
-    private void updateList() {
-        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_bangunan ORDER BY id DESC");
-        mList.clear();
-        while (cursor.moveToNext()){
-            int id = cursor.getInt(0);
-            String namaB = cursor.getString(1);
-            String lantai = cursor.getString(2);
-            String thn = cursor.getString(3);
-            String alamatB = cursor.getString(4);
-            String lati = cursor.getString(5);
-            String longi = cursor.getString(6);
-            byte[] image = cursor.getBlob(7);
-            String nama = cursor.getString(8);
-            String alamat = cursor.getString(9);
-            String nomor = cursor.getString(10);
-        }
-        mAdapter.notifyDataSetChanged();
-    }
+//    private void updateList() {
+//        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_bangunan ORDER BY id DESC");
+//        mList.clear();
+//        while (cursor.moveToNext()){
+//            int id = cursor.getInt(0);
+//            String namaB = cursor.getString(1);
+//            String lantai = cursor.getString(2);
+//            String thn = cursor.getString(3);
+//            String alamatB = cursor.getString(4);
+//            String lati = cursor.getString(5);
+//            String longi = cursor.getString(6);
+//            byte[] image = cursor.getBlob(7);
+//            String nama = cursor.getString(8);
+//            String alamat = cursor.getString(9);
+//            String nomor = cursor.getString(10);
+//        }
+//        mAdapter.notifyDataSetChanged();
+//    }
 
 
     @Override

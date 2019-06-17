@@ -41,6 +41,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     }
 
+    public void insertDataKerusakan (int id_bangunan, int struktur, int level_kerusakan){
+        SQLiteDatabase database = getWritableDatabase();
+
+        String sql = "INSERT INTO data_kerusakan VALUES(NULL,?,?,?)";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+        statement.bindDouble(1,(double)id_bangunan);
+        statement.bindDouble(2,(double)struktur);
+        statement.bindDouble(3,(double)level_kerusakan);
+
+        statement.executeInsert();
+
+    }
+
     public void updateData(String namaB, String lantai, String thn, String alamatB, String lati,
                            String longi, byte[] image, String nama, String alamat, String hp, int id){
 
@@ -69,10 +85,37 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     }
 
+    public void updateDataKerusakan (int level, int id){
+        System.out.println("ini dddddiaaa "+level+"  "+id);
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        String  sql = "UPDATE data_kerusakan SET level_kerusakan = ? WHERE id = ?";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.bindDouble(1,(double)level);
+        statement.bindDouble(2,(double)id);
+        statement.execute();
+        database.close();
+
+    }
+
     public void deleteData(int id){
         SQLiteDatabase database = getWritableDatabase();
 
         String sql = "DELETE FROM data_bangunan WHERE id = ?";
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+        statement.bindDouble(1, (double)id);
+
+        statement.execute();
+        database.close();
+    }
+
+    public void deleteDataKerusakan(int id){
+        SQLiteDatabase database = getWritableDatabase();
+
+        String sql = "DELETE FROM data_kerusakan WHERE id = ?";
         SQLiteStatement statement = database.compileStatement(sql);
         statement.clearBindings();
         statement.bindDouble(1, (double)id);

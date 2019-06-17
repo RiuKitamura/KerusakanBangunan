@@ -1,5 +1,7 @@
 package com.example.acer.kerusakanbangunan;
 
+import javax.xml.transform.dom.DOMLocator;
+
 public class Model {
     private int id;
     private String nama_b;
@@ -23,6 +25,19 @@ public class Model {
         this.lati = lati;
         this.longi = longi;
         this.poto = poto;
+        this.nama = nama;
+        this.alamat = alamat;
+        this.hp = hp;
+    }
+    public Model(int id, String nama_b, String lantai, String thn, String alamat_b, String lati,
+                 String longi, String nama, String alamat, String hp){
+        this.id = id;
+        this.nama_b = nama_b;
+        this.lantai = lantai;
+        this.thn = thn;
+        this.alamat_b = alamat_b;
+        this.lati = lati;
+        this.longi = longi;
         this.nama = nama;
         this.alamat = alamat;
         this.hp = hp;

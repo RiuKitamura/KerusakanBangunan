@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -43,8 +42,8 @@ public class HistoryListAdapter extends BaseAdapter {
         return position;
     }
 
-    private class ViewHolder{
-        CircleImageView imageView;
+    class ViewHolder{
+//        CircleImageView imageView;
         TextView textName, textAlamat;
     }
     @Override
@@ -58,7 +57,7 @@ public class HistoryListAdapter extends BaseAdapter {
             row = inflater.inflate(layout,null);
             holder.textName = row.findViewById(R.id.nama_bg_txt);
             holder.textAlamat = row.findViewById(R.id.alamat_bg_txt);
-            holder.imageView = row.findViewById(R.id.poto_bangunan);
+//            holder.imageView = row.findViewById(R.id.poto_bangunan);
             row.setTag(holder);
         }
         else {
@@ -70,9 +69,9 @@ public class HistoryListAdapter extends BaseAdapter {
         holder.textName.setText(model.getNama_b());
         holder.textAlamat.setText(model.getAlamat_b());
 
-        byte[] recordImage = model.getPoto();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(recordImage,0,recordImage.length);
-        holder.imageView.setImageBitmap(bitmap);
+//        byte[] recordImage = model.getPoto();
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(recordImage,0,recordImage.length);
+//        holder.imageView.setImageBitmap(bitmap);
 
         return row;
     }

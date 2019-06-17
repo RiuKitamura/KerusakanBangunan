@@ -57,16 +57,16 @@ public class FormActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Formulir");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        nama_bg = findViewById(R.id.nama_bangunan);
-        lantai = findViewById(R.id.jml_lantai);
-        tahun = findViewById(R.id.thn_dibuat);
-        alamat_bg = findViewById(R.id.latitude);
-        lati = findViewById(R.id.nama_bangunan);
-        longi = findViewById(R.id.longitude);
+        nama_bg = (EditText) findViewById(R.id.nama_bangunan);
+        lantai = (EditText) findViewById(R.id.jml_lantai);
+        tahun = (EditText) findViewById(R.id.thn_dibuat);
+        alamat_bg = (EditText) findViewById(R.id.alamat_bangunan);
+        lati = (EditText) findViewById(R.id.latitude);
+        longi = (EditText) findViewById(R.id.longitude);
         poto = findViewById(R.id.add_photo_btn);
-        nama = findViewById(R.id.nama_person);
-        alamat = findViewById(R.id.alamat_person);
-        no_hp = findViewById(R.id.nomor_person);
+        nama = (EditText) findViewById(R.id.nama_person);
+        alamat = (EditText) findViewById(R.id.alamat_person);
+        no_hp = (EditText) findViewById(R.id.nomor_person);
         next = findViewById(R.id.next_btn);
 
         isi_gambar = false;
@@ -86,6 +86,15 @@ public class FormActivity extends AppCompatActivity {
                         && isi_gambar!=false && nama.getText().length()!=0 && alamat.getText().length()!=0
                         && no_hp.getText().length()!=0 ){
                     try{
+                        System.out.println("nama b "+nama_bg.getText());
+                        System.out.println("lantai:" +lantai.getText());
+                        System.out.println("tahun "+tahun.getText());
+                        System.out.println("alamat b "+alamat_bg.getText());
+                        System.out.println("lati "+lati.getText());
+                        System.out.println("longi "+longi.getText());
+                        System.out.println("nama "+nama.getText());
+                        System.out.println("alamat "+alamat.getText());
+                        System.out.println("nomor "+no_hp.getText());
                         MainActivity.mSQLiteHelper.insertData(
                                 nama_bg.getText().toString().trim(),
                                 lantai.getText().toString().trim(),
@@ -159,9 +168,15 @@ public class FormActivity extends AppCompatActivity {
                 isi_gambar=true;
 
             }else if(requestCode==CAMERA_REQUEST_CODE2){
-
+                Bitmap  mBitmap = null;
                 Uri selectedImageUri = data.getData();
-                poto.setImageURI(selectedImageUri);
+                try {
+                    mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //poto.setImageURI(selectedImageUri);
+                poto.setImageBitmap(mBitmap);
                 isi_gambar=true;
             }
 
@@ -172,7 +187,7 @@ public class FormActivity extends AppCompatActivity {
     private static byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }

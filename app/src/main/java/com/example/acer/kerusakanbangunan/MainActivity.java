@@ -59,9 +59,13 @@ public class MainActivity extends AppCompatActivity {
                 "nama_bangunan VARCHAR, jumlah_lantai VARCHAR, tahun VARCHAR, alamat_bangunan VARCHAR, latitude VARCHAR, " +
                 "longitude VARCHAR, poto BLOB, nama VARCHAR, alamat VARCHAR, nomor_hp VARCHAR)");
 
+        mSQLiteHelper.queryData("CREATE TABLE IF NOT EXISTS data_kerusakan(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id_bangunan INTEGER, struktur INTEGER, level_kerusakan INTEGER)");
+
         //mSQLiteHelper.getReadableDatabase();
         //GET ALL DATA FROM SQLITE
-        Cursor cursor = mSQLiteHelper.getData("SELECT * FROM data_bangunan ORDER BY id DESC");
+        Cursor cursor = mSQLiteHelper.getData("SELECT id, nama_bangunan, jumlah_lantai, tahun, alamat_bangunan,latitude, " +
+                "longitude, nama, alamat, nomor_hp FROM data_bangunan ORDER BY id DESC");
         mList.clear();
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -71,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
             String alamat_b = cursor.getString(4);
             String lati = cursor.getString(5);
             String longi = cursor.getString(6);
-            byte[] poto = cursor.getBlob(7);
-            String nama = cursor.getString(8);
-            String alamat = cursor.getString(9);
-            String nomor = cursor.getString(10);
+            //byte[] poto = cursor.getBlob(7);
+            String nama = cursor.getString(7);
+            String alamat = cursor.getString(8);
+            String nomor = cursor.getString(9);
 
-            mList.add(new Model(id, nama_b, lantai, thn, alamat_b,lati, longi, poto, nama, alamat, nomor));
+            mList.add(new Model(id, nama_b, lantai, thn, alamat_b,lati, longi, nama, alamat, nomor));
 
         }
         mAdapter.notifyDataSetChanged();
@@ -87,7 +91,13 @@ public class MainActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tos(id);
+                Cursor c = mSQLiteHelper.getData("SELECT id FROM data_bangunan ORDER BY id DESC");
+                ArrayList<Integer> arrID = new ArrayList<Integer>();
+                while (c.moveToNext()){
+                    arrID.add(c.getInt(0));
+                }
+                moveToDiagonis(arrID.get(position));
+
             }
         });
 
@@ -138,8 +148,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void tos(long p){
-        Toast.makeText(this, "Data "+p, Toast.LENGTH_SHORT).show();
+    void moveToDiagonis(final int id){
+        Intent i = new Intent(this, DiagnosisActivity.class);
+        Bundle bun = new Bundle();
+        bun.putInt("id", id);
+        i.putExtras(bun);
+        startActivity(i);
     }
 
     private void showDialogDelete(final int id) {
@@ -245,7 +259,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void updateList() {
-        Cursor cursor = mSQLiteHelper.getData("SELECT * FROM data_bangunan ORDER BY id DESC");
+        Cursor cursor = mSQLiteHelper.getData("SELECT id, nama_bangunan, jumlah_lantai, tahun, alamat_bangunan,latitude, " +
+                "longitude, nama, alamat, nomor_hp FROM data_bangunan ORDER BY id DESC");
         mList.clear();
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -255,10 +270,10 @@ public class MainActivity extends AppCompatActivity {
             String alamatB = cursor.getString(4);
             String lati = cursor.getString(5);
             String longi = cursor.getString(6);
-            byte[] image = cursor.getBlob(7);
-            String nama = cursor.getString(8);
-            String alamat = cursor.getString(9);
-            String nomor = cursor.getString(10);
+//            byte[] image = cursor.getBlob(7);
+            String nama = cursor.getString(7);
+            String alamat = cursor.getString(8);
+            String nomor = cursor.getString(9);
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -324,5 +339,7 @@ public class MainActivity extends AppCompatActivity {
 //        byte[] byteArray = stream.toByteArray();
 //        return byteArray;
 //    }
-
+@Override
+public void onBackPressed() {
+}
 }
