@@ -2,6 +2,8 @@ package com.example.acer.kerusakanbangunan;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class KondisiKolomListAdapter extends BaseAdapter {
 
@@ -59,6 +63,14 @@ public class KondisiKolomListAdapter extends BaseAdapter {
             holder.strukturTxt = row.findViewById(R.id.list_txt);
             holder.addPoto = row.findViewById(R.id.add_foto);
 
+            holder.addPoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Model2 model = kolomList.get(position);
+                    Toast.makeText(context, "camera "+model.getId(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
 
 //            holder.imageView = row.findViewById(R.id.poto_bangunan);
             row.setTag(holder);
@@ -83,6 +95,20 @@ public class KondisiKolomListAdapter extends BaseAdapter {
         if(model.getLevel()==3){
             holder.textKondisi.setText("Rusak Berat");
         }
+        holder.addPoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Model2 model = kolomList.get(position);
+                Intent i = new Intent(context.getApplicationContext(), AmbilGambarRetakan.class);
+                i.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                Bundle bun = new Bundle();
+                bun.putInt("id", model.getId());
+                bun.putInt("stuk",model.getStuktur());
+                i.putExtras(bun);
+                context.getApplicationContext().startActivity(i);
+
+            }
+        });
 
 //        byte[] recordImage = model.getPoto();
 //        Bitmap bitmap = BitmapFactory.decodeByteArray(recordImage,0,recordImage.length);
@@ -90,4 +116,6 @@ public class KondisiKolomListAdapter extends BaseAdapter {
 
         return row;
     }
+
+
 }

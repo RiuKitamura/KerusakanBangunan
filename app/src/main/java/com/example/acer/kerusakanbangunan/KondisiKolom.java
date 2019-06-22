@@ -60,7 +60,7 @@ public class KondisiKolom extends AppCompatActivity {
         mAdapter = new KondisiKolomListAdapter(this, R.layout.list_kerusakan_layout, mList);
         mListView.setAdapter(mAdapter);
 
-        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
         mList.clear();
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -111,7 +111,7 @@ public class KondisiKolom extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0){
-                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
                             ArrayList<Integer> arrID = new ArrayList<Integer>();
                             while (c.moveToNext()){
                                 arrID.add(c.getInt(0));
@@ -121,7 +121,7 @@ public class KondisiKolom extends AppCompatActivity {
                             //showDialogUpdate(MainActivity.this, arrID.get(position));
                         }
                         if (which == 1){
-                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
                             ArrayList<Integer> arrID = new ArrayList<Integer>();
                             while (c.moveToNext()){
                                 arrID.add(c.getInt(0));
@@ -131,7 +131,7 @@ public class KondisiKolom extends AppCompatActivity {
                             //showDialogUpdate(MainActivity.this, arrID.get(position));
                         }
                         if (which == 2){
-                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
                             ArrayList<Integer> arrID = new ArrayList<Integer>();
                             while (c.moveToNext()){
                                 arrID.add(c.getInt(0));
@@ -158,7 +158,7 @@ public class KondisiKolom extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0){
-                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+                            Cursor c = MainActivity.mSQLiteHelper.getData("SELECT id FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
                             ArrayList<Integer> arrID = new ArrayList<Integer>();
                             while (c.moveToNext()){
                                 arrID.add(c.getInt(0));
@@ -205,7 +205,7 @@ public class KondisiKolom extends AppCompatActivity {
     }
 
     private void updateList() {
-        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan ORDER BY id DESC");
+        Cursor cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan ORDER BY id ASC");
         mList.clear();
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -220,7 +220,7 @@ public class KondisiKolom extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-        cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id DESC");
+        cursor = MainActivity.mSQLiteHelper.getData("SELECT * FROM data_kerusakan WHERE id_bangunan="+kode+" AND struktur="+stuktur+" ORDER BY id ASC");
         mList.clear();
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -249,6 +249,13 @@ public class KondisiKolom extends AppCompatActivity {
         catch (Exception e){
             Log.e("error", e.getMessage());
         }
+    }
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        updateList();
+        System.out.println("resume");
     }
 
     @Override

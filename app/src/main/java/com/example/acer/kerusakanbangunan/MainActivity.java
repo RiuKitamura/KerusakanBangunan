@@ -339,7 +339,8 @@ public class MainActivity extends AppCompatActivity {
 //        byte[] byteArray = stream.toByteArray();
 //        return byteArray;
 //    }
-@Override
-public void onBackPressed() {
-}
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
 }
